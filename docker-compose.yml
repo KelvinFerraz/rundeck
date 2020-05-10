@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+    rundeck:
+        build:
+            context: ./
+            args:
+                RUNDECK_IMAGE: ${RUNDECK_IMAGE:-rundeck/rundeck:SNAPSHOT}
+        links:
+          - mysql
+        tty: true
+        environment:
+            RUNDECK_GRAILS_URL: http://${HOSTNAME_RUNDECK}
+            RUNDECK_SERVER_FORWARDED: 'true'
+            RUNDECK_DATABASE_DRIVER: com.mysql.jdbc.Driver
+            RUNDECK_DATABASE_USERNAME: rundeck
+            RUNDECK_DATABASE_PASSWORD: rundeck
+            RUNDECK_DATABASE_URL: jdbc:mysql://mysql/rundeck?autoReconnect=true&useSSL=false
+ 
+        volumes:
+          - data:/home/rundeck/server/data
+          - ${RUNDECK_LICENSE_FILE:-/dev/null}:/home/rundeck/etc/rundeckpro-license.key
+    nginx:
+        image: nginx
+        links:
+          - rundeck
+        volumes:
+          - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        ports:
+          - 80:80
+    mysql:
+        image: mysql:5.7
+        expose:
+          - 3306
+        environment:
+          - MYSQL_ROOT_PASSWORD=root
+          - MYSQL_DATABASE=rundeck
+          - MYSQL_USER=rundeck
+          - MYSQL_PASSWORD=rundeck
+        volumes:
+          - dbdata:/var/lib/mysql
+
+volumes:
+    data:
+    dbdata:
