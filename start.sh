@@ -4,7 +4,6 @@
 # Variables
 EXIST_HOSTNAME=$(cat .env | grep -o HOSTNAME_RUNDECK)
 
-
 if [ -z $EXIST_HOSTNAME ];then
     # # Exec compose
     docker-compose up -d
