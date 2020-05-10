@@ -10,7 +10,7 @@ services:
           - mysql
         tty: true
         environment:
-            RUNDECK_GRAILS_URL: http://${HOSTNAME_RUNDECK}:4440
+            RUNDECK_GRAILS_URL: http://${HOSTNAME_RUNDECK}
             RUNDECK_SERVER_FORWARDED: 'true'
             RUNDECK_DATABASE_DRIVER: com.mysql.jdbc.Driver
             RUNDECK_DATABASE_USERNAME: rundeck
